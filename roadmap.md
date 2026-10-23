@@ -1,5 +1,5 @@
-# Repair roadmap
-- [ ] Restore missing public and administration pages and remove the placeholder.
-- [ ] Check registration, administrator access, editorial controls, and image uploads.
-- [ ] Verify tests and desktop/mobile page behavior.
-- [ ] Explain Cloudflare setup limitations accurately without connecting the user's account.
+# Roadmap
+- [x] Connect D1 + R2 via Cloudflare API
+- [x] Real sign up / sign in / admin (first account = admin)
+- [x] Compress photos before upload
+- [x] Bold titles, normal descriptions, full article page, live time
