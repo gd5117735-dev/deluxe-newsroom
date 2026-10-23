@@ -58,7 +58,10 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const data = Route.useLoaderData();
-  const [lead, ...sides] = data.featured;
+  const top = data.featured.length ? data.featured : data.latest;
+  const [lead, ...sides] = top;
+  const shownIds = new Set([lead, ...sides.slice(0, 2)].filter(Boolean).map(a => a!.id));
+  const picks = (data.home.length ? data.home : data.latest).filter(a => !shownIds.has(a.id));
   return <SiteLayout><div className="mx-auto max-w-7xl px-4 py-10 md:px-6">
     <div className="mb-8 flex items-center justify-between border-b pb-5">
       <div><h1 className="text-3xl font-bold text-deep md:text-4xl">دليل بيروتي</h1></div>
@@ -71,6 +74,8 @@ function Index() {
       <Button asChild variant="outline" className="mt-6"><Link to="/news" search={{ q: "", page: 1 }}>كل الأخبار <ArrowLeft /></Link></Button>
     </section>}
     <WhatsAppChannelCard posts={data.channel} />
-    <section className="mt-12"><SectionTitle title="مختارات التحرير" />{data.home.length ? <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{data.home.map(a => <ArticleCard key={a.id} a={a} />)}</div> : <div className="flex items-center gap-3 border-y py-8 text-muted-foreground"><Newspaper className="size-6 text-primary" /><p>لم يتم اختيار أخبار للرئيسية بعد</p></div>}</section>
+    <section className="mt-12"><SectionTitle title={data.home.length ? "مختارات التحرير" : "آخر الأخبار"} />{picks.length ? <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{picks.map(a => <ArticleCard key={a.id} a={a} />)}</div> : <div className="flex items-center gap-3 border-y py-8 text-muted-foreground"><Newspaper className="size-6 text-primary" /><p>لم يتم اختيار أخبار للرئيسية بعد</p></div>}
+      <div className="mt-8 flex justify-center"><Button asChild variant="outline"><Link to="/news" search={{ q: "", page: 1 }}>كل الأخبار <ArrowLeft /></Link></Button></div>
+    </section>
   </div></SiteLayout>;
 }
