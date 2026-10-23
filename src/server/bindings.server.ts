@@ -28,7 +28,7 @@ const BUCKET_NAME = "bucket";
 const API = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}`;
 
 function token(): string | undefined {
-  return process.env.CF_API_TOKEN;
+  return process.env["CF_API_TOKEN"];
 }
 
 class HttpStmt implements D1Stmt {
