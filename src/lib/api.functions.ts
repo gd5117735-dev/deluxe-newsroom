@@ -212,7 +212,7 @@ export const adminUploadImage = createServerFn({ method: "POST" })
     const file = d.get("file");
     if (!(file instanceof File)) throw new Error("لم يتم اختيار صورة");
     if (!IMAGE_TYPES.includes(file.type)) throw new Error("نوع الملف غير مدعوم");
-    if (file.size > 10 * 1024 * 1024) throw new Error("الحد الأقصى 10 ميغابايت");
+    if (file.size > 25 * 1024 * 1024) throw new Error("الصورة كبيرة جداً");
     return file;
   })
   .handler(async ({ data: file }) => {

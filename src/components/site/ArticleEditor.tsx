@@ -1,3 +1,4 @@
+import { compressImage } from "@/lib/compress-image";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Save, Upload, X } from "lucide-react";
@@ -25,7 +26,7 @@ export function ArticleEditor({ article, categories, onClose, onSaved }: { artic
       </div>
       <div className="space-y-6 border-t pt-6 lg:border-s lg:border-t-0 lg:ps-8 lg:pt-0">
         <label className="block space-y-2"><span className="font-bold">صورة الغلاف</span>{src && <img src={src} alt="صورة الغلاف" className="aspect-video w-full rounded-md object-cover" />}<span className="flex items-center gap-2 text-sm text-muted-foreground"><Upload className="size-4" />{uploading ? "جارٍ رفع الصورة…" : "اختيار صورة"}</span>
-          <Input aria-label="صورة الغلاف" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" disabled={uploading} onChange={async e => { const file = e.target.files?.[0]; if (!file) return; setUploading(true); const f = new FormData(); f.set("file", file); try { const r = await upload({ data: f }); setCover(r.key); } catch (err) { toast.error(err instanceof Error ? err.message : "تعذّر رفع الصورة"); } finally { setUploading(false); } }} />
+          <Input aria-label="صورة الغلاف" type="file" accept="image/*" disabled={uploading} onChange={async e => { const file = e.target.files?.[0]; if (!file) return; setUploading(true); const f = new FormData(); f.set("file", await compressImage(file)); try { const r = await upload({ data: f }); setCover(r.key); } catch (err) { toast.error(err instanceof Error ? err.message : "تعذّر رفع الصورة"); } finally { setUploading(false); } }} />
         </label>
         {cover && <Button type="button" variant="ghost" onClick={() => setCover(null)}>إزالة الصورة</Button>}
         <label className="block space-y-2"><span className="font-bold">التصنيف</span><select name="category" defaultValue={article?.category_id ?? ""} className="h-10 w-full rounded-md border bg-background px-3"><option value="">بدون تصنيف</option>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>

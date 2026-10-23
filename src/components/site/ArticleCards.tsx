@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, Eye, Newspaper } from "lucide-react";
-import { mediaUrl, timeAgo, type Article } from "@/lib/types";
+import { mediaUrl, type Article } from "@/lib/types";
+import { LiveTime } from "./LiveTime";
 import { cn } from "@/lib/utils";
 
 function Cover({ a, className }: { a: Article; className?: string }) {
@@ -39,7 +40,7 @@ export function HeroArticle({ a }: { a: Article }) {
           {a.is_breaking ? <span className="rounded-full bg-breaking px-3 py-1 text-[11px] font-black text-breaking-foreground">عاجل</span> : null}
         </div>
         <h2 className="max-w-3xl font-display text-2xl leading-snug font-bold text-deep-foreground md:text-5xl md:leading-tight">{a.title}</h2>
-        {a.excerpt && <p className="line-clamp-2 max-w-2xl text-sm leading-7 text-silver md:text-base">{a.excerpt}</p>}
+        {a.excerpt && <p className="line-clamp-2 max-w-2xl text-sm leading-7 font-normal text-silver md:text-base">{a.excerpt}</p>}
         <Meta a={a} light />
       </div>
     </Link>
@@ -68,7 +69,7 @@ export function ArticleCard({ a }: { a: Article }) {
       <div className="flex flex-1 flex-col gap-3 p-5">
         <CategoryChip a={a} />
         <h3 className="line-clamp-2 font-display text-lg leading-snug font-bold text-foreground group-hover:text-primary">{a.title}</h3>
-        {a.excerpt && <p className="line-clamp-2 text-sm leading-6 text-muted-foreground">{a.excerpt}</p>}
+        {a.excerpt && <p className="line-clamp-2 text-sm leading-6 font-normal text-muted-foreground">{a.excerpt}</p>}
         <div className="mt-auto pt-2">
           <Meta a={a} />
         </div>
@@ -90,7 +91,7 @@ export function CompactArticle({ a, index }: { a: Article; index?: number }) {
       <div className="space-y-1.5">
         <h4 className="line-clamp-2 font-bold leading-snug text-foreground group-hover:text-primary">{a.title}</h4>
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
-          <Clock className="size-3" /> {timeAgo(a.created_at)}
+          <Clock className="size-3" /> <LiveTime ts={a.created_at} />
         </span>
       </div>
     </Link>
@@ -100,7 +101,7 @@ export function CompactArticle({ a, index }: { a: Article; index?: number }) {
 function Meta({ a, light }: { a: Article; light?: boolean }) {
   return (
     <div className={cn("flex items-center gap-4 text-xs", light ? "text-silver/80" : "text-muted-foreground")}>
-      <span className="flex items-center gap-1"><Clock className="size-3.5" /> {timeAgo(a.created_at)}</span>
+      <span className="flex items-center gap-1"><Clock className="size-3.5" /> <LiveTime ts={a.created_at} /></span>
       <span className="flex items-center gap-1"><Eye className="size-3.5" /> {a.views.toLocaleString("ar")}</span>
     </div>
   );
