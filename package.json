@@ -11,7 +11,12 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:create": "wrangler d1 create editorial-luxe-db",
+    "db:migrate:local": "wrangler d1 execute editorial-luxe-db --local --file=./migrations/0001_init.sql",
+    "db:migrate:remote": "wrangler d1 execute editorial-luxe-db --remote --file=./migrations/0001_init.sql",
+    "bucket:create": "wrangler r2 bucket create editorial-luxe-media",
+    "deploy": "vite build && wrangler deploy"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -71,8 +76,9 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "wrangler": "^4.0.0",
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "2.25.3",
+    "@lovable.dev/vite-tanstack-config": "2.26.5",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.0.0",
     "@types/node": "^22.16.5",

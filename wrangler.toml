@@ -1,0 +1,24 @@
+name = "editorial-luxe-cms"
+main = "./.output/server/index.mjs"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets produced by the Nitro "cloudflare_module" build.
+[assets]
+directory = "./.output/public"
+binding = "ASSETS"
+
+# --- D1 (news, categories, users, sessions, media index, channel posts) ---
+# 1) Create the database once:   wrangler d1 create editorial-luxe-db
+# 2) Paste the "database_id" that command prints into the line below.
+# 3) Create the schema:          wrangler d1 execute editorial-luxe-db --remote --file=./migrations/0001_init.sql
+[[d1_databases]]
+binding = "DB"                      # must stay "DB" — src/server/bindings.server.ts reads env.DB
+database_name = "editorial-luxe-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# --- R2 (uploaded images) ---
+# 1) Create the bucket once:     wrangler r2 bucket create editorial-luxe-media
+[[r2_buckets]]
+binding = "BUCKET"                  # must stay "BUCKET" — src/server/bindings.server.ts reads env.BUCKET
+bucket_name = "editorial-luxe-media"

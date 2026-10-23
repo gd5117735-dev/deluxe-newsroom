@@ -1,3 +1,5 @@
+// Never let tests reach the real Cloudflare database.
+delete process.env["CF_API_TOKEN"];
 import "@testing-library/jest-dom/vitest";
 
 Object.defineProperty(window, "scrollTo", {

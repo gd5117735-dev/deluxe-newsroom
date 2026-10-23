@@ -47,6 +47,10 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      // Expose Cloudflare bindings (D1 "DB", R2 "BUCKET") to server code.
+      if (env && typeof env === "object") {
+        (globalThis as unknown as { __CF_ENV__?: unknown }).__CF_ENV__ = env;
+      }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
