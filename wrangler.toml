@@ -1,4 +1,4 @@
-name = "editorial-luxe-cms"
+name = "newsroomdaelllel"
 main = "./.output/server/index.mjs"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
@@ -14,11 +14,11 @@ binding = "ASSETS"
 # 3) Create the schema:          wrangler d1 execute editorial-luxe-db --remote --file=./migrations/0001_init.sql
 [[d1_databases]]
 binding = "DB"                      # must stay "DB" — src/server/bindings.server.ts reads env.DB
-database_name = "editorial-luxe-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_name = "db"
+database_id = "e8503891-eb29-4edf-b576-087934572999"
 
 # --- R2 (uploaded images) ---
 # 1) Create the bucket once:     wrangler r2 bucket create editorial-luxe-media
 [[r2_buckets]]
 binding = "BUCKET"                  # must stay "BUCKET" — src/server/bindings.server.ts reads env.BUCKET
-bucket_name = "editorial-luxe-media"
+bucket_name = "bucket"
