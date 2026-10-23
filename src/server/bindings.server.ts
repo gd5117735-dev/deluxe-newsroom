@@ -74,7 +74,7 @@ const httpR2: R2Like = {
   async get(key) {
     const res = await fetch(objUrl(key), { headers: { Authorization: `Bearer ${token()}` } });
     if (!res.ok) return null;
-    const contentType = res.headers.get("content-type") ?? undefined;
+    const contentType = res.headers.get("content-type") ?? "application/octet-stream";
     return { arrayBuffer: () => res.arrayBuffer(), httpMetadata: { contentType } };
   },
   async delete(key) {
