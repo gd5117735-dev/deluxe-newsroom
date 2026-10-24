@@ -27,6 +27,7 @@ function WhatsAppChannelCard({ posts }: { posts: ChannelPost[] }) {
         <span className="rounded-full border border-whatsapp/40 bg-whatsapp/15 px-3 py-1 text-xs font-bold text-whatsapp">مباشر</span>
       </div>
       <div className="space-y-3 bg-secondary/40 p-4">
+        <div className="max-h-[26rem] space-y-3 overflow-y-auto overscroll-contain pe-1">
         {posts.map((p) => (
           <article key={p.id} className="rounded-2xl border border-border bg-card p-4 shadow-soft">
             <div className="flex items-center justify-between text-xs">
@@ -36,6 +37,7 @@ function WhatsAppChannelCard({ posts }: { posts: ChannelPost[] }) {
             <p className="mt-2 whitespace-pre-line text-sm leading-7 text-foreground">{p.body}</p>
           </article>
         ))}
+        </div>
         <a
           href={SITE.channel}
           target="_blank"

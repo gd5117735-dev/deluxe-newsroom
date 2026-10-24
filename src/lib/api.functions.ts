@@ -53,7 +53,7 @@ export const getHome = createServerFn({ method: "GET" }).handler(async () => {
     repo.listArticles({ home: true, limit: 24 }),
     repo.listArticles({ limit: 8 }),
     repo.listCategories(),
-    repo.listChannelPosts(3),
+    repo.listChannelPosts(50),
   ]);
   const sections = await Promise.all(
     categories.filter((c) => c.count > 0).slice(0, 8).map(async (c) => ({
@@ -205,6 +205,30 @@ export const adminListUsers = createServerFn({ method: "GET" }).handler(async ()
   return repo.listUsers();
 });
 
+export const adminCreateAdmin = createServerFn({ method: "POST" })
+  .inputValidator(
+    z.object({
+      name: z.string().trim().min(2, "الاسم قصير").max(80),
+      email: z.string().trim().toLowerCase().email("بريد غير صالح").max(160),
+      password: z.string().min(8, "كلمة المرور 8 أحرف على الأقل").max(128),
+    }),
+  )
+  .handler(async ({ data }) => {
+    await auth.requireAdmin();
+    if (await repo.getUserByEmail(data.email)) throw new Error("هذا البريد مسجّل مسبقاً");
+    await repo.createAdminUser({ id: crypto.randomUUID(), name: data.name, email: data.email, password_hash: await auth.hashPassword(data.password), created_at: Date.now() });
+    return { ok: true };
+  });
+
+export const adminSetAdmin = createServerFn({ method: "POST" })
+  .inputValidator(z.object({ id: z.string().min(1).max(64), value: z.boolean() }))
+  .handler(async ({ data }) => {
+    const me = await auth.requireAdmin();
+    if (data.id === me.id && !data.value) throw new Error("لا يمكنك إزالة صلاحية المدير عن حسابك");
+    await repo.setAdmin(data.id, data.value);
+    return { ok: true };
+  });
+
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
 export const adminUploadImage = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => {
@@ -227,7 +251,7 @@ export const adminUploadImage = createServerFn({ method: "POST" })
 /* ------------------------ WhatsApp channel ------------------------ */
 export const adminListChannelPosts = createServerFn({ method: "GET" }).handler(async () => {
   await auth.requireAdmin();
-  return repo.listChannelPosts(30);
+  return repo.listChannelPosts(200);
 });
 export const adminAddChannelPost = createServerFn({ method: "POST" })
   .inputValidator(z.object({ body: z.string().trim().min(2, "النص قصير").max(500, "النص طويل") }))

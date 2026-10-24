@@ -27,4 +27,11 @@ describe("Editorial rules", () => {
     for (let i = 0; i < 125; i++) await repo.upsertCategory({ id: String(i), name: String(i), slug: String(i), description: null, sort: i, created_at: i });
     expect(await repo.listCategories()).toHaveLength(125);
   });
+  it("lets an admin create extra admin accounts", async () => {
+    await repo.createUser(user("owner"));
+    await repo.createAdminUser(user("helper"));
+    expect(await repo.getUserRoles("helper")).toEqual(["admin"]);
+    await repo.setAdmin("helper", false);
+    expect(await repo.getUserRoles("helper")).toEqual([]);
+  });
 });

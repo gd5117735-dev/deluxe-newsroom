@@ -87,6 +87,26 @@ export async function createUser(u: UserRow): Promise<boolean> {
   ]);
   return (await getUserRoles(u.id)).includes("admin");
 }
+export async function createAdminUser(u: UserRow): Promise<void> {
+  const db = await d1();
+  if (!db) {
+    if (mem().users.some(x => x.email === u.email)) throw new Error("هذا البريد مسجّل مسبقاً");
+    mem().users.push(u); mem().roles.push({ user_id: u.id, role: "admin" }); return;
+  }
+  await db.batch([
+    db.prepare("INSERT INTO users (id,name,email,password_hash,created_at) VALUES (?,?,?,?,?)").bind(u.id, u.name, u.email, u.password_hash, u.created_at),
+    db.prepare("INSERT INTO user_roles (user_id, role) VALUES (?, 'admin')").bind(u.id),
+  ]);
+}
+export async function setAdmin(userId: string, value: boolean): Promise<void> {
+  const db = await d1();
+  if (!db) {
+    const m = mem(); m.roles = m.roles.filter(r => !(r.user_id === userId && r.role === "admin"));
+    if (value) m.roles.push({ user_id: userId, role: "admin" }); return;
+  }
+  if (value) await db.prepare("INSERT OR IGNORE INTO user_roles (user_id, role) VALUES (?, 'admin')").bind(userId).run();
+  else await db.prepare("DELETE FROM user_roles WHERE user_id = ? AND role = 'admin'").bind(userId).run();
+}
 export async function getUserByEmail(email: string): Promise<UserRow | null> {
   const db = await d1();
   if (!db) return mem().users.find((u) => u.email === email) ?? null;
